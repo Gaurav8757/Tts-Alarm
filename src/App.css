@@ -1,0 +1,59 @@
+body{
+  display: filter;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.App{
+  background-color: black;
+  margin-top: 5px;
+  padding: 5px 20px;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.clock .alarm-clock
+{
+  color: white;
+  background-color: black;
+  font-size: 2rem;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 0 15px;
+  border-radius: 18px;
+  border: 5px solid white;
+  margin: 20px auto;
+}
+
+.alarm-clock form{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.alarm-clock input, .alarm-clock select, .alarm-clock button{
+  padding: 10px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #333;
+  color: white;
+  margin: 5px;
+}
+.alarm-clock button{
+  cursor: pointer;
+  background-color: green;
+  transition: background-color 0.3s case;
+}
+.alarm-clock button:hover{
+  background-color: greenyellow;
+}
+
+.alarm-clock h2{
+  margin: 20px;
+  font-size: 20px;
+}
+
