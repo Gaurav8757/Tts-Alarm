@@ -22,6 +22,8 @@ const Alarm = () => {
     sound: Object.values(SystemSounds)[0],
     repeat: 'never',
     customAudio: null,
+    language: 'en-IN',
+    messageRepeat: 1,
   });
   const [menuOpen, setMenuOpen] = useState(null);
 
@@ -36,7 +38,7 @@ const Alarm = () => {
     }
   }, []);
 
-  // Check alarms every minute
+  // Check alarms every second (for second-level precision)
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
@@ -44,13 +46,15 @@ const Alarm = () => {
         if (!alarm.enabled) return;
 
         const matches =
-          now.getHours() === alarm.hours && now.getMinutes() === alarm.minutes;
+          now.getHours() === alarm.hours && 
+          now.getMinutes() === alarm.minutes && 
+          now.getSeconds() === 0;
 
         if (matches) {
           triggerAlarm(alarm);
         }
       });
-    }, 60000);
+    }, 1000);
 
     return () => clearInterval(timer);
   }, [alarms]);
@@ -72,12 +76,20 @@ const Alarm = () => {
       }
     }
 
-    // Speak message
-    speak({
-      text: alarm.message,
-      rate: 0.9,
-      pitch: 1.1,
-    });
+    // Speak message with repetition and language
+    const messageRepeatCount = alarm.messageRepeat || 1;
+    const language = alarm.language || 'en-IN';
+    
+    for (let i = 0; i < messageRepeatCount; i++) {
+      setTimeout(() => {
+        speak({
+          text: alarm.message,
+          rate: 0.9,
+          pitch: 1.1,
+          lang: language,
+        });
+      }, i * 3000); // 3 second delay between repetitions
+    }
 
     // Notification
     if (Notification.permission === 'granted') {
@@ -119,6 +131,8 @@ const Alarm = () => {
       sound: Object.values(SystemSounds)[0],
       repeat: 'never',
       customAudio: null,
+      language: 'en-IN',
+      messageRepeat: 1,
     });
     setShowAudioUpload(false);
   };
@@ -132,6 +146,8 @@ const Alarm = () => {
       sound: alarm.sound || Object.values(SystemSounds)[0],
       repeat: alarm.repeat,
       customAudio: alarm.customAudio || null,
+      language: alarm.language || 'en-IN',
+      messageRepeat: alarm.messageRepeat || 1,
     });
     setEditingId(alarm.id);
     setShowForm(true);
@@ -324,6 +340,36 @@ const Alarm = () => {
               initialAudio={formData.customAudio}
             />
           )}
+
+          <div className="form-group">
+            <label>Voice Language</label>
+            <select
+              value={formData.language}
+              onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+              className="form-input"
+            >
+              <option value="en-IN">English (Indian)</option>
+              <option value="hi-IN">Hindi</option>
+              <option value="en-US">English (US)</option>
+              <option value="en-GB">English (UK)</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Message Repeat Count</label>
+            <input
+              type="number"
+              min="1"
+              max="5"
+              value={formData.messageRepeat}
+              onChange={(e) => setFormData({ ...formData, messageRepeat: parseInt(e.target.value) || 1 })}
+              className="form-input"
+            />
+            <small style={{ display: 'block', marginTop: '5px', color: '#999' }}>
+              Message will repeat {formData.messageRepeat} time{formData.messageRepeat !== 1 ? 's' : ''} (3s between each)
+            </small>
+          </div>
 
           <div className="form-group">
             <label>Repeat</label>
