@@ -23,7 +23,7 @@ const AudioUploader = ({ onAudioSelect, onCancel, initialAudio = null }) => {
 
     try {
       // Check file type
-      const validTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a'];
+      const validTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp3', 'audio/x-m4a'];
       if (!validTypes.some(type => file.type.includes(type.split('/')[1]))) {
         throw new Error('Please upload an audio file (MP3, WAV, OGG, M4A)');
       }
